@@ -31,9 +31,9 @@ async def main():
 
         response = await session.post(URL + '/user/',
             json={
-                'username': 'user_222',
-                'password': '23456789',
-                'email': 'u222@ya.ru'
+                'username': 'user_111',
+                'password': '12345678',
+                'email': 'u111@ya.ru'
             },
             params={}, headers={}
         )
@@ -41,11 +41,15 @@ async def main():
         print(data)
 
 
-        # response = await session.get(URL + '/user/1',
-        #     json={},params={}, headers={}
-        # )
-        # data = await response.json()
-        # print(data)
+        response = await session.get(URL + '/user/1',
+            json={},params={}, headers={}
+        )
+        try:
+            data = await response.json()
+        except Exception as err:
+            print(err)
+            data = await response.text()
+        print(data)
 
 
 
