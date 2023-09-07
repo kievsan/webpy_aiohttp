@@ -9,6 +9,7 @@ URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
 
 
 async def result(response):
+    print(response.method, response.url)
     data = ''
     try:
         data = await response.json()
@@ -25,8 +26,7 @@ async def main():
         response = await session.get(URL + '/')
         await result(response)
 
-        response = await session.post(
-            URL + '/',
+        response = await session.post(URL + '/',
             json={
                 'json_key': 'json_value'
             },
