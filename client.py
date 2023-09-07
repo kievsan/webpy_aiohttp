@@ -9,12 +9,14 @@ URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
 
 
 async def result(response):
+    data = ''
     try:
         data = await response.json()
     except Exception as err:
         print(err)
         data = await response.text()
-    print('\n', data)
+    finally:
+        print(data, '\n===============\n')
     return data
 
 
@@ -35,9 +37,10 @@ async def main():
                 'token': 'some_token'
             }
         )
+        await result(response)
         #   читаем json от сервера
-        data = await response.json()
-        print(data)  # должен прийти словарик {'Hello': 'world'}
+        # data = await response.json()
+        # print(data)  # должен прийти словарик {'Hello': 'world'}
 
 
         #********************************************

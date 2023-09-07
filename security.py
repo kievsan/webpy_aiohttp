@@ -12,7 +12,7 @@ def md5_hash_password(password: str) -> str:
 
 
 def bcrypt_hash_password(password: str) -> str:
-    password: bytes = password.encode()
-    password = hashpw(password=password, salt=gensalt())
-    password: str = password.decode()
+    password = hashpw(password=password.encode(),
+                      salt=gensalt()
+                      ).decode()
     return password
