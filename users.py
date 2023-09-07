@@ -78,9 +78,9 @@ class UserView(web.View):
         json_data["password"] = md5_hash_password(pwd)
 
         new_user = User(**json_data)
-        self.request['session_from_middleware'].add(new_user)
+        self.session.add(new_user)
         try:
-            await self.request['session_from_middleware'].commit()
+            await self.session.commit()
         except IntegrityError as err:
             errHTTP = web.HTTPConflict
             errMSG = err
@@ -97,13 +97,37 @@ class UserView(web.View):
         })
 
     async def patch(self):                                      # ИЗМЕНИТЬ
-        pass
+        json_data = await self.request.json()
+        json_data = await validate(json_data, CreateUser)
+        # если пароль пришел, то хэшируем его:
+        if 'password' in json_data:
+            json_data["password"] = md5_hash_password(json_data["password"])
+
+        user = await get_user(self.user_id, self.session)
+        for field, value in json_data.items():
+            setattr(user, field, value)
+        try:
+            await self.session.commit()
+        except IntegrityError as err:
+            errHTTP = web.HTTPConflict
+            errMSG = err
+            text = json.dumps({
+                "status":   str(errHTTP.status_code),  # 409
+                "message":  f"Key(username)=({user.username})"
+                            f" is busy!"
+                            f"  pgcode={errMSG.orig.pgcode}"
+            })
+            raise errHTTP(text=text, content_type=JSON_TYPE)
+        return web.json_response({
+                "status": f"user '{user.username}' patch success",
+                "id": user.id
+        })
 
     async def delete(self):                                      # УДАЛИТЬ
         user = await get_user(self.user_id, self.session)
-        self.request['session_from_middleware'].delete(user)
+        await self.session.delete(user)
         try:
-            await self.request['session_from_middleware'].commit()
+            await self.session.commit()
         except IntegrityError as err:
             errHTTP = web.HTTPConflict
             errMSG = err

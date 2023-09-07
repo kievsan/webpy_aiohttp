@@ -68,9 +68,9 @@ class AdView(web.View):
         json_data = await validate(json_data, CreateAd)
 
         new_ad = Ad(**json_data)
-        self.request['session_from_middleware'].add(new_ad)
+        self.session.add(new_ad)
         try:
-            await self.request['session_from_middleware'].commit()
+            await self.session.commit()
         except IntegrityError as err:
             errHTTP = web.HTTPConflict
             text = json.dumps({
@@ -88,9 +88,9 @@ class AdView(web.View):
 
     async def delete(self):
         ad = await get_ad(self.ad_id, self.session)
-        self.request['session_from_middleware'].delete(ad)
+        await self.session.delete(ad)
         try:
-            await self.request['session_from_middleware'].commit()
+            await self.session.commit()
         except IntegrityError as err:
             errHTTP = web.HTTPConflict
             errMSG = err
