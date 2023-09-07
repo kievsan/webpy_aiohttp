@@ -55,7 +55,7 @@ async def main():
         #********************************************
         response = await session.patch(URL + '/user/1',
             json={
-                'username': 'user_112',
+                'username': 'new_name',
                 'password': '12345677',
                 'email': 'u112@ya.ru'
             },
@@ -77,7 +77,7 @@ async def main():
 
         #********************************************
         response = await session.patch(URL + '/ad/1',
-            json={'header': 'header_112'}
+            json={'header': 'new_header'}
         )
         await result(response)
 

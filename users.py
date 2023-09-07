@@ -8,7 +8,7 @@ import json
 
 from models import Session, User
 from validate_scheme import CreateUser, PatchUser
-from security import md5_hash_password
+from security import md5_hash_password, bcrypt_hash_password
 
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
@@ -73,9 +73,11 @@ class UserView(web.View):
         json_data = await validate(json_data, CreateUser)
 
         # извлекаем пароль (строку) для хэширования:
-        pwd: str = json_data["password"]
+        pw: str = json_data["password"]
         # кладем хэш (строку) обратно в json:
-        json_data["password"] = md5_hash_password(pwd)
+        hash_pw = bcrypt_hash_password(pw)
+        json_data["password"] = hash_pw
+        # json_data["password"] = md5_hash_password(pw)
 
         new_user = User(**json_data)
         self.session.add(new_user)
@@ -101,7 +103,8 @@ class UserView(web.View):
         json_data = await validate(json_data, CreateUser)
         # если пароль пришел, то хэшируем его:
         if 'password' in json_data:
-            json_data["password"] = md5_hash_password(json_data["password"])
+            json_data["password"] = bcrypt_hash_password(json_data["password"])
+            # json_data["password"] = md5_hash_password(json_data["password"])
 
         user = await get_user(self.user_id, self.session)
         for field, value in json_data.items():
