@@ -2,9 +2,11 @@ import asyncio
 
 import aiohttp
 
+from db_conf import AIOHTTP_HOST, AIOHTTP_PORT
+
 
 async def main():
-    URL = 'http://127.0.0.1:8080'
+    URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
 
     async with aiohttp.ClientSession() as session:
         response = await session.get(URL + '/', json={})

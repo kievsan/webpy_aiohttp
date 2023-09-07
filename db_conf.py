@@ -11,3 +11,6 @@ DB_HOST = os.getenv('DB_HOST')
 DB_PORT = os.getenv('DB_HOST_PORT')
 
 DSN = f'{DB_ENGINE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+
+AIOHTTP_HOST = os.getenv('AIOHTTP_HOST')
+AIOHTTP_PORT = os.getenv('AIOHTTP_PORT')

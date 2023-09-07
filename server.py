@@ -2,6 +2,8 @@
 
 from aiohttp import web
 
+from db_conf import AIOHTTP_PORT
+
 from models import engine, Base, Session
 from users import UserView
 from hello_world import hello_world
@@ -43,5 +45,6 @@ app.add_routes([
 ])
 
 
-web.run_app(app)        # точка входа ( как у asyncio.run(main) )
+# точка входа ( как у asyncio.run(main) )
+web.run_app(app, host='0.0.0.0', port=AIOHTTP_PORT)
 
