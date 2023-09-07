@@ -5,7 +5,7 @@ import requests as requests
 from typing import Optional
 
 
-URL = f'http://localhost:5000/user/'
+URL = f'http://localhost:5000'
 
 def password_min_lenght(min_lenght = 8):
     msg = f"passwortd short: length less than {min_lenght} signs!"
@@ -55,8 +55,8 @@ class CreateAd(pydantic.BaseModel):   # валидация новой рекла
     description: Optional[str] = None
 
     @pydantic.field_validator('user_id')
-    async def validate_ad_owner(cls, value):
-        response = requests.get(URL + value)
+    def validate_ad_owner(cls, value):
+        response = requests.get(f'{URL}/user/{value}')
         if response.status_code != 200:
             raise ValueError('user not found...')
         return value
@@ -69,8 +69,8 @@ class PatchAd(pydantic.BaseModel):   # валидация рекламы
     description: Optional[str] = None
 
     @pydantic.field_validator('user_id')
-    async def validate_ad_owner(cls, value):
-        response = requests.get(URL + value)
+    def validate_ad_owner(cls, value):
+        response = requests.get(f'{URL}/user/{value}')
         if response.status_code != 200:
             raise ValueError('user not found...')
         return value

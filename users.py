@@ -100,6 +100,23 @@ class UserView(web.View):
         pass
 
     async def delete(self):                                      # УДАЛИТЬ
-        pass
-
-
+        user = await get_user(self.user_id, self.session)
+        self.request['session_from_middleware'].delete(user)
+        try:
+            await self.request['session_from_middleware'].commit()
+        except IntegrityError as err:
+            errHTTP = web.HTTPConflict
+            errMSG = err
+            text = json.dumps({
+                "status":   str(errHTTP.status_code),  # 409
+                "message":  f"Unknown trouble..."
+                            f"  pgcode={errMSG.orig.pgcode}   {err}"
+            })
+            raise errHTTP(text=text, content_type=JSON_TYPE)
+        return web.json_response({
+            "status": "user delete success",
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "creation_time": user.creation_time.isoformat()
+        })

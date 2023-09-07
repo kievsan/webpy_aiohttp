@@ -5,20 +5,20 @@ import aiohttp
 from db_conf import AIOHTTP_HOST, AIOHTTP_PORT
 
 
+URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
+
+
+async def result(response):
+    try:
+        data = await response.json()
+    except Exception as err:
+        print(err)
+        data = await response.text()
+    print('\n', data)
+    return data
+
+
 async def main():
-    URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
-
-    async def result(response):
-        try:
-            data = await response.json()
-        except Exception as err:
-            print(err)
-            data = await response.text()
-        print('\n', data)
-        return data
-
-
-
     async with aiohttp.ClientSession() as session:
         response = await session.get(URL + '/')
         await result(response)
@@ -41,28 +41,28 @@ async def main():
 
 
         #********************************************
-        response = await session.post(URL + '/user/',
-            json={
-                'username': 'user_111',
-                'password': '12345678',
-                'email': 'u111@ya.ru'
-            },
-            params={}, headers={}
-        )
-        await result(response)
+        # response = await session.post(URL + '/user/',
+        #     json={
+        #         'username': 'user_111',
+        #         'password': '12345678',
+        #         'email': 'u111@ya.ru'
+        #     },
+        #     params={}, headers={}
+        # )
+        # await result(response)
 
 
         #********************************************
-        response = await session.get(URL + '/user/1',
-            json={},params={}, headers={}
-        )
-        await result(response)
+        # response = await session.get(URL + '/user/1',
+        #     json={},params={}, headers={}
+        # )
+        # await result(response)
 
 
         #********************************************
-        response = await session.post(URL + '/ad/',
-            json={"user_id": "1"})
-        await result(response)
+        # response = await session.post(URL + '/ad/',
+        #     json={"user_id": "1"})
+        # await result(response)
 
 
 
