@@ -58,14 +58,15 @@ class UserView(web.View):
     def session(self) -> AsyncSession:
         return self.request['session_from_middleware']
 
-    async def get(self):                                        # НАЙТИ     (52-30)
+    async def get(self):                                        # НАЙТИ
         user = await get_user(self.user_id, self.session)
-        return web.json_response({
+        response = web.json_response({
             "id": user.id,
             "username": user.username,
             "email": user.email,
             "creation_time": int(user.creation_time.timestamp())
         })
+        return response
 
     async def post(self):                                       # ДОБАВИТЬ
         json_data = await self.request.json()
@@ -83,22 +84,22 @@ class UserView(web.View):
         except IntegrityError as err:
             errHTTP = web.HTTPConflict
             errMSG = err
-            json_dumps = json.dumps({
+            text = json.dumps({
                 "status":   str(errHTTP.status_code),  # 409
                 "message":  f"Key(username)=({new_user.username})"
                             f" already exists!"
                             f"  pgcode={errMSG.orig.pgcode}"
             })
-            raise errHTTP(text=json_dumps, content_type=JSON_TYPE)
+            raise errHTTP(text=text, content_type=JSON_TYPE)
         return web.json_response({
                 "status": f"user '{new_user.username}' add success",
                 "id": new_user.id
         })
 
-    async def patch(self):
+    async def patch(self):                                      # ИЗМЕНИТЬ
         pass
 
-    async def delete(self):
+    async def delete(self):                                      # УДАЛИТЬ
         pass
 
 
