@@ -65,9 +65,7 @@ async def main():
 
 
         #********************************************
-        response = await session.get(URL + '/user/1',
-            json={},params={}, headers={}
-        )
+        response = await session.get(URL + '/user/1')
         await result(response)
 
 
@@ -78,9 +76,14 @@ async def main():
 
 
         #********************************************
-        response = await session.get(URL + '/ad/1',
-            json={},params={}, headers={}
+        response = await session.patch(URL + '/ad/1',
+            json={'header': 'header_112'}
         )
+        await result(response)
+
+
+        #********************************************
+        response = await session.get(URL + '/ad/1')
         await result(response)
 
 
