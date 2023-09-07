@@ -4,6 +4,7 @@ from aiohttp import web
 
 from typing import Type
 import json
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import Session, Ad
 from validate_scheme import CreateAd, PatchAd
@@ -43,8 +44,24 @@ async def get_ad(ad_id: int, session: Session) -> Ad:
 
 
 class AdView(web.View):
-    async def get(self, user_id: int):                          # НАЙТИ
-        pass
+    @property
+    def ad_id(self) -> int:
+        return int(self.request.match_info['user_id'])
+
+    @property
+    def session(self) -> AsyncSession:
+        return self.request['session_from_middleware']
+
+    async def get(self):                                        # НАЙТИ
+        ad = await get_ad(self.ad_id, self.session)
+        response = web.json_response({
+            "id": ad.id,
+            "header": ad.header,
+            "description": ad.description,
+            "user_id": ad.user_id,
+            "creation_time": int(ad.creation_time.timestamp())
+        })
+        return response
 
     async def post(self):                                       # ДОБАВИТЬ
         json_data = await self.request.json()
@@ -70,11 +87,24 @@ class AdView(web.View):
         pass
 
     async def delete(self):
-        pass
-
-
-
-
-
-
-
+        ad = await get_ad(self.ad_id, self.session)
+        self.request['session_from_middleware'].delete(ad)
+        try:
+            await self.request['session_from_middleware'].commit()
+        except IntegrityError as err:
+            errHTTP = web.HTTPConflict
+            errMSG = err
+            text = json.dumps({
+                "status":   str(errHTTP.status_code),  # 409
+                "message":  f"Delete: unknown trouble..."
+                            f"  pgcode={errMSG.orig.pgcode}   {err}"
+            })
+            raise errHTTP(text=text, content_type=JSON_TYPE)
+        return web.json_response({
+            "status": "user delete success",
+            "id": ad.id,
+            "header": ad.header,
+            "description": ad.description,
+            "user_id": ad.user_id,
+            "creation_time": int(ad.creation_time.timestamp())
+        })

@@ -109,7 +109,7 @@ class UserView(web.View):
             errMSG = err
             text = json.dumps({
                 "status":   str(errHTTP.status_code),  # 409
-                "message":  f"Unknown trouble..."
+                "message":  f"Delete: unknown trouble..."
                             f"  pgcode={errMSG.orig.pgcode}   {err}"
             })
             raise errHTTP(text=text, content_type=JSON_TYPE)
