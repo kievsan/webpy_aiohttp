@@ -79,12 +79,32 @@ class AdView(web.View):
             })
             raise errHTTP(text=text, content_type=JSON_TYPE)
         return web.json_response({
-                "status": f"advertisement add success",
+                "status": "advertisement add success",
                 "id": new_ad.id
         })
 
-    async def patch(self):
-        pass
+    async def patch(self):                                    # ДОБАВИТЬ
+        json_data = await self.request.json()
+        json_data = await validate(json_data, CreateAd)
+
+        ad = await get_ad(self.ad_id, self.session)
+        for field, value in json_data.items():
+            setattr(ad, field, value)
+        try:
+            await self.session.commit()
+        except IntegrityError as err:
+            errHTTP = web.HTTPConflict
+            errMSG = err
+            text = json.dumps({
+                "status":   str(errHTTP.status_code),  # 409
+                "message":  f"Patch: unknown trouble..."
+                            f"  pgcode={errMSG.orig.pgcode}   {err}"
+            })
+            raise errHTTP(text=text, content_type=JSON_TYPE)
+        return web.json_response({
+                "status": "advertisement patch success",
+                "id": ad.id
+        })
 
     async def delete(self):
         ad = await get_ad(self.ad_id, self.session)
