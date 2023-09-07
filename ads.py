@@ -7,7 +7,6 @@ import json
 
 from models import Session, Ad
 from validate_scheme import CreateAd, PatchAd
-from security import md5_hash_password
 
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError

@@ -5,6 +5,8 @@ from aiohttp import web
 from db_conf import AIOHTTP_PORT
 
 from models import engine, Base, Session
+
+from ads import AdView
 from users import UserView
 from hello_world import hello_world
 
@@ -41,7 +43,12 @@ app.add_routes([
     # ожидаем цифры от одной и более
     web.get('/user/user_id:\d+', UserView),
     web.patch('/user/user_id:\d+', UserView),
-    web.delete('/user/user_id:\d+', UserView)
+    web.delete('/user/user_id:\d+', UserView),
+
+    web.post('/ad/', AdView),
+    web.get('/ad/ad_id:\d+', AdView),
+    web.patch('/ad/ad_id:\d+', AdView),
+    web.delete('/ad/ad_id:\d+', AdView)
 ])
 
 

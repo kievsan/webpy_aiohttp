@@ -9,7 +9,7 @@ async def main():
     URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
 
     async with aiohttp.ClientSession() as session:
-        response = await session.get(URL + '/', json={})
+        response = await session.get(URL + '/')
         data = await response.json()
         print(data)
 
@@ -29,6 +29,8 @@ async def main():
         # data = await response.json()
         # print(data)  # должен прийти словарик {'Hello': 'world'}
 
+
+        #********************************************
         response = await session.post(URL + '/user/',
             json={
                 'username': 'user_111',
@@ -41,15 +43,27 @@ async def main():
         print(data)
 
 
-        response = await session.get(URL + '/user/1',
-            json={},params={}, headers={}
-        )
-        try:
-            data = await response.json()
-        except Exception as err:
-            print(err)
-            data = await response.text()
-        print(data)
+        #********************************************
+        # response = await session.post(URL + '/ad/',
+        #     json={"user_id": "1"})
+        # try:
+        #     data = await response.json()
+        # except Exception as err:
+        #     print(err)
+        #     data = await response.text()
+        # print(data)
+
+
+        #********************************************
+        # response = await session.get(URL + '/user/1',
+        #     json={},params={}, headers={}
+        # )
+        # try:
+        #     data = await response.json()
+        # except Exception as err:
+        #     print(err)
+        #     data = await response.text()
+        # print(data)
 
 
 
