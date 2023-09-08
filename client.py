@@ -2,7 +2,7 @@ import asyncio
 
 import aiohttp
 
-from db_conf import AIOHTTP_HOST, AIOHTTP_PORT
+from settings import AIOHTTP_HOST, AIOHTTP_PORT
 
 
 URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'

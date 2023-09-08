@@ -2,7 +2,7 @@
 
 from aiohttp import web
 
-from db_conf import AIOHTTP_PORT
+from settings import AIOHTTP_PORT
 
 from models import engine, Base, Session
 

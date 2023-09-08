@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
-from db_conf import DSN
+from settings import DSN
 engine = create_async_engine(DSN)
 
 from sqlalchemy.orm import declarative_base, sessionmaker

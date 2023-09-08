@@ -7,6 +7,6 @@ async def hello_world(request: web.Request):
     # headers = request.headers
     # qs = request.query
     return web.json_response({
-        'Hello': 'world',
+        "Hello": "world",
         # 'json': json_data
     })
