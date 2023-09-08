@@ -56,7 +56,6 @@ class PatchUser(pydantic.BaseModel):
 
 
 class CreateAd(pydantic.BaseModel):  # валидация новой рекламы
-
     user_id: int
     header: Optional[str] = 'made ad'
     description: Optional[str] = None
@@ -70,7 +69,6 @@ class CreateAd(pydantic.BaseModel):  # валидация новой рекла�
 
 
 class PatchAd(pydantic.BaseModel):  # валидация рекламы
-
     user_id: Optional[int] = None
     header: Optional[str] = None
     description: Optional[str] = None
