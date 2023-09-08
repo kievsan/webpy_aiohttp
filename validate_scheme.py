@@ -5,7 +5,7 @@ from typing import Optional
 
 from settings import AIOHTTP_HOST, AIOHTTP_PORT
 
-URL = 'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
+URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
 
 
 def short_passwordt(password: str, min_lenght: int = 8) -> str:
