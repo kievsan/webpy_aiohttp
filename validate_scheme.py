@@ -1,18 +1,21 @@
 import pydantic  # содержит СХЕМЫ ВАЛИДАЦИИ
 
 import requests as requests
-
 from typing import Optional
 
+from settings import AIOHTTP_HOST, AIOHTTP_PORT
 
-def short_passwordt(password, min_lenght: int = 8) -> str:
+URL = 'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
+
+
+def short_passwordt(password: str, min_lenght: int = 8) -> str:
     err = f"passwortd short: length less than {min_lenght} signs!"
     return err if len(password) < min_lenght else ''
 
 
 def not_a_user(user_id: int) -> str:
     err = 'user not found...'
-    response = requests.get(f'http://localhost:5000/user/{user_id}')
+    response = requests.get(f'{URL}/user/{user_id}')
     return err if response.status_code != 200 else ''
 
 
