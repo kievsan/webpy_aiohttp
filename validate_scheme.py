@@ -8,12 +8,12 @@ from settings import AIOHTTP_HOST, AIOHTTP_PORT
 URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
 
 
-def short_passwordt(password: str, min_lenght: int = 8) -> str:
+def err_short_password(password: str, min_lenght: int = 8) -> str:
     err = f"passwortd short: length less than {min_lenght} signs!"
     return err if len(password) < min_lenght else ''
 
 
-def not_a_user(user_id: int) -> str:
+def err_not_a_user(user_id: int) -> str:
     err = 'user not found...'
     response = requests.get(f'{URL}/user/{user_id}')
     return err if response.status_code != 200 else ''
@@ -32,7 +32,7 @@ class CreateUser(pydantic.BaseModel):  # здесь будет валидаци�
         # cls               -   класс, value - значение
         # password          -   валидируемое поле
         # validate_password -   так можем давать название методам валидации
-        error = short_passwordt(value)
+        error = err_short_password(value)
         if error:
             raise ValueError(error)
             # нужно выбросить исключение именно ValueError,
@@ -49,7 +49,7 @@ class PatchUser(pydantic.BaseModel):
 
     @pydantic.field_validator('password')
     def validate_password(cls, value):
-        error = short_passwordt(value)
+        error = err_short_password(value)
         if error:
             raise ValueError(error)
         return value
@@ -62,7 +62,7 @@ class CreateAd(pydantic.BaseModel):  # валидация новой рекла�
 
     @pydantic.field_validator('user_id')
     def validate_user_id(cls, value):
-        error = not_a_user(value)
+        error = err_not_a_user(value)
         if error:
             raise ValueError(error)
         return value
@@ -75,7 +75,7 @@ class PatchAd(pydantic.BaseModel):  # валидация рекламы
 
     @pydantic.field_validator('user_id')
     def validate_user_id(cls, value):
-        error = not_a_user(value)
+        error = err_not_a_user(value)
         if error:
             raise ValueError(error)
         return value
