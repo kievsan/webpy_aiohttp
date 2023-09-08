@@ -6,9 +6,9 @@ from settings import AIOHTTP_PORT
 
 from models import engine, Base, Session
 
-from ads import AdView
-from users import UserView
-from hello_world import hello_world
+from handlers_AdView import AdView
+from handlers_UserView import UserView
+from handler_hello_world import hello_world
 
 
 app = web.Application()
