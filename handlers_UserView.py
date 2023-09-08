@@ -45,6 +45,13 @@ async def get_user(user_id: int, session: Session) -> User:
     return user
 
 
+# def get_ad_list_of_user(user_id: int, session: Session) -> list:
+#     return list()
+
+# def get_number_of_user_ads(user_id: int, session: Session) -> int:
+#     return len(get_user_ads(user_id, session))
+
+
 class UserView(web.View):
     # request и user_id будем получать из self
     # в request в переменной match_info - список значений,
@@ -60,12 +67,7 @@ class UserView(web.View):
 
     async def get(self):                                        # НАЙТИ
         user = await get_user(self.user_id, self.session)
-        response = web.json_response({
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "creation_time": int(user.creation_time.timestamp())
-        })
+        response = web.json_response(user.info_dict())
         return response
 
     async def post(self):                                       # ДОБАВИТЬ
@@ -142,8 +144,5 @@ class UserView(web.View):
             raise errHTTP(text=text, content_type=JSON_TYPE)
         return web.json_response({
             "status": "user delete success",
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "creation_time": user.creation_time.isoformat()
+            "user": user.info_dict()
         })

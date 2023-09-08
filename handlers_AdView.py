@@ -54,13 +54,7 @@ class AdView(web.View):
 
     async def get(self):                                        # НАЙТИ
         ad = await get_ad(self.ad_id, self.session)
-        response = web.json_response({
-            "id": ad.id,
-            "header": ad.header,
-            "description": ad.description,
-            "user_id": ad.user_id,
-            "creation_time": int(ad.creation_time.timestamp())
-        })
+        response = web.json_response(ad.info_dict())
         return response
 
     async def post(self):                                       # ДОБАВИТЬ
@@ -122,9 +116,5 @@ class AdView(web.View):
             raise errHTTP(text=text, content_type=JSON_TYPE)
         return web.json_response({
             "status": "user delete success",
-            "id": ad.id,
-            "header": ad.header,
-            "description": ad.description,
-            "user_id": ad.user_id,
-            "creation_time": int(ad.creation_time.timestamp())
+            "ad": ad.info_dict()
         })

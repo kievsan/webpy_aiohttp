@@ -40,12 +40,24 @@ class User(Base):
         nullable=False,
         index=True
     )
-    creation_time = Column(
+    reg_time = Column(
         DateTime,
         server_default=func.now()
     )  # вызовет в postgres
     # метод now() - текущее время
     # postgres сам проставит время !!!
+
+    def info_dict(self):
+        info = {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            "reg_time": int(self.reg_time.timestamp())
+            }
+        return info
+
+    def __str__(self):
+        return f'Ads user: {self.info_dict()}'
 
 
 # модель объявления:
@@ -73,3 +85,16 @@ class Ad(Base):
         Integer,
         nullable=False
     )
+
+    def info_dict(self):
+        info = {
+            'id': self.id,
+            'header': self.name,
+            'description': self.description,
+            'user_id': self.email,
+            'creation_time': int(self.creation_time.timestamp())
+            }
+        return info
+
+    def __str__(self):
+        return f'Ad project: {self.info_dict()}'
