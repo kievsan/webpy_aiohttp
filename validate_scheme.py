@@ -1,21 +1,25 @@
-import pydantic     # содержит СХЕМЫ ВАЛИДАЦИИ
+import pydantic  # содержит СХЕМЫ ВАЛИДАЦИИ
 
 import requests as requests
 
 from typing import Optional
 
 
-URL = f'http://localhost:5000'
-
-def password_min_lenght(min_lenght = 8):
-    msg = f"passwortd short: length less than {min_lenght} signs!"
-    return min_lenght, msg
+def short_passwordt(password, min_lenght: int = 8) -> str:
+    err = f"passwortd short: length less than {min_lenght} signs!"
+    return err if len(password) < min_lenght else ''
 
 
-class CreateUser(pydantic.BaseModel):   # здесь будет валидация пользователя
-                                        # (того, что пойдет в post)
-    username: str       # два обязательных поля:
-    password: str       # то, что должен прислать клиент!
+def not_a_user(user_id: int) -> str:
+    err = 'user not found...'
+    response = requests.get(f'http://localhost:5000/user/{user_id}')
+    return err if response.status_code != 200 else ''
+
+
+class CreateUser(pydantic.BaseModel):  # здесь будет валидация пользователя
+    # (того, что пойдет в post)
+    username: str  # два обязательных поля:
+    password: str  # то, что должен прислать клиент!
     email: Optional[str] = 'missing@email'
 
     # Можно добавить валидации, напр, проверять сложность пароля
@@ -25,53 +29,52 @@ class CreateUser(pydantic.BaseModel):   # здесь будет валидаци
         # cls               -   класс, value - значение
         # password          -   валидируемое поле
         # validate_password -   так можем давать название методам валидации
-        min_len, msg = password_min_lenght()
-        if len(value) < min_len:
+        error = short_passwordt(value)
+        if error:
+            raise ValueError(error)
             # нужно выбросить исключение именно ValueError,
             # и библ. pydantic его правльно обработает!
-            raise ValueError(msg)
+        return value
         # возвращаем уже валидированное значение
         # (иногда здесь хешируют пароль, но лучше делать отдельно!)
-        return value
 
 
 class PatchUser(pydantic.BaseModel):
-    username: Optional[str] = None          # поля опциональны
-    password: Optional[str] = None          # (не обязательно все обновлять...)
+    username: Optional[str] = None  # поля опциональны
+    password: Optional[str] = None  # (не обязательно все обновлять...)
     email: Optional[str] = None
 
     @pydantic.field_validator('password')
     def validate_password(cls, value):
-        min_len, msg = password_min_lenght()
-        if len(value) < min_len:
-            raise ValueError(msg)
+        error = short_passwordt(value)
+        if error:
+            raise ValueError(error)
         return value
 
 
-class CreateAd(pydantic.BaseModel):   # валидация новой рекламы
+class CreateAd(pydantic.BaseModel):  # валидация новой рекламы
 
     user_id: int
     header: Optional[str] = 'made ad'
     description: Optional[str] = None
 
     @pydantic.field_validator('user_id')
-    def validate_ad_owner(cls, value):
-        response = requests.get(f'{URL}/user/{value}')
-        if response.status_code != 200:
-            raise ValueError('user not found...')
+    def validate_user_id(cls, value):
+        error = not_a_user(value)
+        if error:
+            raise ValueError(error)
         return value
 
 
-class PatchAd(pydantic.BaseModel):   # валидация рекламы
+class PatchAd(pydantic.BaseModel):  # валидация рекламы
 
     user_id: Optional[int] = None
     header: Optional[str] = None
     description: Optional[str] = None
 
     @pydantic.field_validator('user_id')
-    def validate_ad_owner(cls, value):
-        response = requests.get(f'{URL}/user/{value}')
-        if response.status_code != 200:
-            raise ValueError('user not found...')
+    def validate_user_id(cls, value):
+        error = not_a_user(value)
+        if error:
+            raise ValueError(error)
         return value
-

@@ -11,6 +11,9 @@ from users import UserView
 from hello_world import hello_world
 
 
+app = web.Application()
+
+
 async def orm_context(app):
     print('START')
     # первая миграция:
@@ -29,7 +32,7 @@ async def session_middleware(request: web.Request, handler):
         return response
 
 
-app = web.Application()
+# app = web.Application()
 app.cleanup_ctx.append(orm_context)
 app.middlewares.append(session_middleware)
 
