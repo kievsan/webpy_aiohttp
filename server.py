@@ -6,8 +6,8 @@ from settings import AIOHTTP_PORT
 
 from models import engine, Base, Session
 
-from handlers_AdView import AdView
-from handlers_UserView import UserView
+from handlers_ad import AdView
+from handlers_user import UserView
 from handler_hello_world import hello_world
 
 
@@ -16,7 +16,7 @@ async def orm_context(app: web.Application):
     # первая миграция:
     async with engine.begin() as connect:
         await connect.run_sync(Base.metadata.create_all)
-    yield               #--------->
+    yield
     await engine.dispose()
     print('SHUT DOWN')
 
@@ -41,14 +41,14 @@ app.add_routes([
     web.post('/user/', UserView),
     # передадим регулярку, которой user_id должен соответствовать
     # ожидаем цифры от одной и более
-    web.get('/user/user_id:\d+', UserView),
-    web.patch('/user/user_id:\d+', UserView),
-    web.delete('/user/user_id:\d+', UserView),
+    web.get('/user/{user_id:\d+}', UserView),
+    web.patch('/user/{user_id:\d+}', UserView),
+    web.delete('/user/{user_id:\d+}', UserView),
 
     web.post('/ad/', AdView),
-    web.get('/ad/ad_id:\d+', AdView),
-    web.patch('/ad/ad_id:\d+', AdView),
-    web.delete('/ad/ad_id:\d+', AdView)
+    web.get('/ad/{ad_id:\d+}', AdView),
+    web.patch('/ad/{ad_id:\d+}', AdView),
+    web.delete('/ad/{ad_id:\d+}', AdView)
 ])
 
 

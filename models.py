@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
 from settings import DSN
 
-engine = create_async_engine(DSN)
+engine = create_async_engine(DSN, pool_pre_ping=True)
 
 from sqlalchemy.orm import declarative_base, sessionmaker
 

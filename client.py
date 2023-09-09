@@ -46,9 +46,9 @@ async def main():
         #********************************************
         response = await session.post(URL + '/user/',
             json={
-                'username': 'user_111',
-                'password': '12345678',
-                'email': 'u111@ya.ru'
+                'username': 'user_222',
+                'password': '23456789',
+                'email': 'u22@ya.ru'
             },
             params={}, headers={}
         )

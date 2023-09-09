@@ -9,7 +9,7 @@ URL = f'http://{AIOHTTP_HOST}:{AIOHTTP_PORT}'
 
 
 def err_short_password(password: str, min_lenght: int = 8) -> str:
-    err = f"passwortd short: length less than {min_lenght} signs!"
+    err = f"passwortd short: less than {min_lenght} signs!"
     return err if len(password) < min_lenght else ''
 
 
